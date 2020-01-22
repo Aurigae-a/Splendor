@@ -224,6 +224,22 @@ class ClientConnection:
                         # 获取轮次的信息
                         self.central_process.main_window.game_turn = int(msg[index:index+1].decode(encoding='utf-8'))
                         self.central_process.main_window.game_label[10].set_text("Turn: Player "+str(self.central_process.main_window.game_turn+1))
+                        # 根据玩家编号判断是否是当前回合
+                        if self.central_process.main_window.game_my_turn_num == self.central_process.main_window.game_turn:
+                            # 是自己当前的回合
+                            if self.central_process.main_window.game_my_turn == False:
+                                self.central_process.main_window.game_my_turn = True
+                                self.central_process.main_window.game_operation = 0
+                                self.central_process.main_window.game_reset()
+                                self.central_process.main_window.game_hint_state = 0
+                        else:
+                            # 不是自己的回合
+                            if self.central_process.main_window.game_my_turn == True:
+                                # 自己的回合结束
+                                self.central_process.main_window.game_my_turn = False
+                                self.central_process.main_window.game_operation = 0
+                                self.central_process.main_window.game_reset()
+                                self.central_process.main_window.game_hint_state = -1
                     except:
                         continue
 
@@ -269,12 +285,6 @@ class ClientConnection:
                             self.central_process.main_window.game_player_list[-1-index].enable = False
                     except:
                         continue
-                
-                elif cmd == b'011':
-                    # 来自服务器的通知该玩家开始回合的信息
-                    print("游戏开始")
-                    self.central_process.main_window.game_my_turn = True
-                    self.central_process.main_window.game_hint_state = 0
                 
                 elif cmd == b'015':
                     # 来自服务器的通知该玩家是第几号的信息
