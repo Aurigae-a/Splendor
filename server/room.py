@@ -235,10 +235,6 @@ class Room:
         self.turn = self.turn + 1
         if self.turn >= len(self.player_list):
             self.turn = 0
-        # 向客户端发出通知
-        if self.player_list[self.turn] != None:
-            # 向客户端重复发信息，直到收到回执位置
-            self.player_list[self.turn].send(b'0110')
     
     def prepareInfo(self):
         """
@@ -287,14 +283,14 @@ class Room:
                 else:
                     # 表示游戏还没有开始，处于准备阶段，则对所有的用户广播该房间的状态
                     self.broadcast_room_state()
-                    time.sleep(2)
+                    time.sleep(1)
             
             else:
                 if self.gameFinished == False:
                     # 开始游戏
                     self.broadcast_game_state()
                     self.broadcast_turn_state()
-                    time.sleep(2)
+                    time.sleep(1)
                 else:
                     # 游戏结束
                     # 广播结束信息
